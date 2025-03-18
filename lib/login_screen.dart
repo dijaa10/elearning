@@ -4,7 +4,6 @@ import 'package:http/http.dart'
 import 'dart:convert'; // untuk mengubah data JSON menjadi objek Dart
 import 'package:shared_preferences/shared_preferences.dart'; //shared_preferences untuk menyimpan data secara lokal
 import 'screen/utama_screen.dart'; // mengimpor halaman utama aplikasi setelah login
-import 'register_screen.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -13,11 +12,11 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final TextEditingController nisnController =
-      TextEditingController(); // untuk input nisn
+      TextEditingController(); // untuk menyimpan input nisn
   final TextEditingController passwordController =
-      TextEditingController(); // untuk input password
-  bool _obscureText = true; // Untuk menyembunyikan atau menampilkan password
-  bool _isLoading = false; // Untuk menampilkan indikator loading saat login
+      TextEditingController(); // untuk menyimpan input password
+  bool _obscureText = true; // untuk menyembunyikan atau menampilkan password
+  bool _isLoading = false; // untuk menampilkan indikator loading saat login
 
 // Fungsi untuk melakukan login
   Future<void> login() async {
@@ -27,7 +26,7 @@ class _LoginState extends State<Login> {
       return; // Hentikan proses login jika input kosong
     }
 
-    // URL API login
+    // URL API login (route laravel)
     const String url = 'http://127.0.0.1:8000/api/siswa/login';
 
     // Set state untuk menampilkan indikator loading
@@ -45,9 +44,9 @@ class _LoginState extends State<Login> {
           'Accept': 'application/json', // Meminta respons dalam format JSON
         },
         body: json.encode({
-          'nisn': nisnController.text, // Mengirimkan NISN dari input pengguna
-          'password': passwordController
-              .text, // Mengirimkan password dari input pengguna
+          'nisn': nisnController.text, // Mengirimkan NISN dari inputan
+          'password':
+              passwordController.text, // Mengirimkan password dari inputan
         }),
       );
 
@@ -59,14 +58,14 @@ class _LoginState extends State<Login> {
         // Jika status login berhasil
         if (data['status'] == 'success') {
           await saveUserData(data); // Simpan data pengguna ke penyimpanan lokal
-          showSuccessDialog(); // Tampilkan dialog sukses login
+          showSuccessDialog(); // Menampilkan dialog sukses login
         } else {
-          // Jika login gagal, tampilkan pesan error dari server
+          // Jika login gagal, menampilkan pesan error dari server
           showErrorDialog(data['message'] ??
               'Login gagal. Periksa kembali NISN dan password Anda.');
         }
       } else if (response.statusCode == 401) {
-        // Jika server mengembalikan kode 401 (Unauthorized), tampilkan pesan kesalahan login
+        // Jika server mengembalikan kode 401 (Unauthorized), menampilkan pesan kesalahan login
         showErrorDialog('NISN atau password salah. Silakan coba lagi.');
       } else {
         // Jika ada kesalahan lain dari server, tampilkan status kode error
@@ -324,23 +323,6 @@ class _LoginState extends State<Login> {
                               ),
                       ),
                     ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-
-                // Teks "Belum punya akun?" dengan navigasi ke halaman registrasi
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Register()), // Ganti dengan halaman registrasi
-                    );
-                  },
-                  child: const Text(
-                    "Belum punya akun? Daftar",
-                    style: TextStyle(color: Colors.blueGrey, fontSize: 16),
                   ),
                 ),
               ],

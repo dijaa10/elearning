@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+// Import halaman-halaman list
+import 'dashboard_page.dart';
+import 'mata_pelajaran_page.dart';
+import 'tugas_page.dart';
+import 'ujian_page.dart';
+import 'forum_diskusi_page.dart';
+import 'profil_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -6,22 +13,15 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // AppBar di bagian atas layar
       appBar: AppBar(
-        // Judul
         backgroundColor: Color(0xFF1976D2),
         elevation: 0, // Tanpa bayangan
         title: const Text('E-Learning SMKN 1 Sumberasih'),
-        // Membuat judul berada di tengah AppBar
         centerTitle: true,
       ),
-      // Menambahkan drawer (menu samping) ke halaman
       drawer: const SimpleDrawer(),
-      // Konten utama halaman
       body: Center(
-        // Column untuk menata widget secara vertikal
         child: Column(
-          // Menempatkan widget di tengah secara vertikal
           mainAxisAlignment: MainAxisAlignment.center,
           // Daftar widget yang ditampilkan
           children: const [
@@ -65,7 +65,6 @@ class SimpleDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     // Widget Drawer untuk menu samping
     return Drawer(
-      // ListView memungkinkan konten di-scroll jika melebihi tinggi layar
       child: ListView(
         // Menghilangkan padding default
         padding: EdgeInsets.zero,
@@ -78,61 +77,75 @@ class SimpleDrawer extends StatelessWidget {
             ),
 
             accountName: const Text(
-              'Dija',
+              'Person',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
 
-            accountEmail: const Text('dija@gmail.com'),
+            accountEmail: const Text('person@gmail.com'),
             // Foto profil pengguna
             currentAccountPicture: CircleAvatar(),
           ),
-          // Item menu Dashboard
+
           _buildMenuItem(
             context,
             icon: Icons.dashboard,
             title: 'Dashboard',
+            onTap: () => _navigateTo(context, const DashboardPage()),
           ),
-          // Item menu Mata Pelajaran dengan badge notifikasi
+
           _buildMenuItem(
             context,
             icon: Icons.book,
             title: 'Mata Pelajaran',
+            onTap: () => _navigateTo(context, const MataPelajaranPage()),
           ),
-          // Item menu Tugas
+
           _buildMenuItem(
             context,
             icon: Icons.assignment,
             title: 'Tugas',
+            onTap: () => _navigateTo(context, const TugasPage()),
           ),
-          // Item menu Ujian
+
           _buildMenuItem(
             context,
             icon: Icons.quiz,
             title: 'Ujian',
+            onTap: () => _navigateTo(context, const UjianPage()),
           ),
-          // Item menu Forum Diskusi
+
           _buildMenuItem(
             context,
             icon: Icons.forum,
             title: 'Forum Diskusi',
+            onTap: () => _navigateTo(context, const ForumDiskusiPage()),
           ),
-          // Item menu Profil
+
           _buildMenuItem(
             context,
             icon: Icons.person,
             title: 'Profil',
+            onTap: () => _navigateTo(context, const ProfilPage()),
           ),
-          // Garis pemisah
+
           const Divider(),
-          // Item menu Keluar dengan warna merah
+
           _buildMenuItem(
             context,
             icon: Icons.logout,
             title: 'Keluar',
             textColor: Colors.red,
             iconColor: Colors.red,
+            onTap: () {
+              // Implementasi logout
+              Navigator.pop(context);
+              // Di sini bisa tambahkan logic untuk logout
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Logout berhasil')),
+              );
+            },
           ),
           // Jarak di bagian bawah
           const SizedBox(height: 20),
@@ -141,17 +154,27 @@ class SimpleDrawer extends StatelessWidget {
     );
   }
 
+  // Fungsi untuk navigasi ke halaman yang dituju
+  void _navigateTo(BuildContext context, Widget page) {
+    Navigator.pop(context); // Tutup drawer
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => page),
+    );
+  }
+
   // Fungsi helper untuk membuat item menu drawer
   Widget _buildMenuItem(
     BuildContext context, {
-    required IconData icon, // Ikon yang ditampilkan
-    required String title, // Judul menu
+    required IconData icon,
+    required String title,
     Widget? trailing, // Widget tambahan di bagian kanan (opsional)
     Color iconColor = Colors.blueGrey,
     Color textColor = Colors.black87,
+    VoidCallback? onTap,
   }) {
     return ListTile(
-      // Ikon di bagian kiri
+      // kiri
       leading: Icon(
         icon,
         color: iconColor,
@@ -164,14 +187,10 @@ class SimpleDrawer extends StatelessWidget {
           fontWeight: FontWeight.w500, // Sedikit tebal
         ),
       ),
-
+      // Widget tambahan di bagian kanan (jika ada)
+      trailing: trailing,
       // Fungsi yang dijalankan saat item menu ditekan
-      onTap: () {
-        // Menutup drawer
-        Navigator.pop(context);
-        // Komentar untuk implementasi navigasi di masa depan
-        // Implementasi navigasi ke halaman yang sesuai
-      },
+      onTap: onTap,
     );
   }
 }
